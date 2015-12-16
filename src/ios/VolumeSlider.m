@@ -145,6 +145,12 @@ UISlider* volumeViewSlider = nil;
 
 }
 
+@end
+
+
+@implementation UIColor (Private)
+
+// taken from http://stackoverflow.com/questions/1560081/how-can-i-create-a-uicolor-from-a-hex-string
 + (UIColor *)colorFromHexString:(NSString *)hexString {
     unsigned rgbValue = 0;
     NSScanner *scanner = [NSScanner scannerWithString:hexString];

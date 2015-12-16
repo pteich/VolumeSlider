@@ -7,10 +7,9 @@
 //      MIT Licensed
 //
 
+#import <UIKit/UIKit.h>
 #import <Cordova/CDVPlugin.h>
-
 #import <MediaPlayer/MediaPlayer.h>
-
 
 @interface VolumeSlider : CDVPlugin <UITabBarDelegate> {
 	NSString* callbackId;
@@ -27,5 +26,11 @@
 - (void)hideVolumeSlider:(CDVInvokedUrlCommand *)command;
 - (void)setVolumeSlider:(CDVInvokedUrlCommand *)command;
 - (void)resetVolumeSlider:(CDVInvokedUrlCommand *)command;
+
+@end
+
+@interface UIColor (Private)
+
++ (UIColor *)colorFromHexString:(NSString *)hexString;
 
 @end
