@@ -35,48 +35,69 @@ UISlider* volumeViewSlider = nil;
 {
 	NSLog(@"In createVolumeSlider");
     NSArray* arguments = [command arguments];
-    
+
 	self.callbackId = command.callbackId;
 	NSUInteger argc = [arguments count];
-	
+
 	if (argc < 3) { // at a minimum we need x origin, y origin and width...
-		return;	
+		return;
 	}
-	
+
 	if (self.mpVolumeViewParentView != NULL) {
        // 	return;//already created, don't need to create it again
 	}
-	
+
 	CGFloat originx,originy,width;
 	CGFloat height = 30;
-	
+
 	originx = [[arguments objectAtIndex:0] floatValue];
 	originy = [[arguments objectAtIndex:1] floatValue];
 	width = [[arguments objectAtIndex:2] floatValue];
 	if (argc > 3) {
 		height = [[arguments objectAtIndex:3] floatValue];
 	}
-	
-	CGRect viewRect = CGRectMake(
-								 originx, 
-								 originy, 
-								 width, 
-								 height
-								 );
+
+	CGRect viewRect = CGRectMake(originx,originy,width,height);
+
     self.mpVolumeViewParentView = [[UIView alloc] initWithFrame:viewRect];
 
 	[self.webView.superview addSubview:mpVolumeViewParentView];
-	
-	mpVolumeViewParentView.backgroundColor = [UIColor clearColor];
-	self.myVolumeView =
-	[[MPVolumeView alloc] initWithFrame: mpVolumeViewParentView.bounds];
-	[mpVolumeViewParentView addSubview: myVolumeView];
-	self.myVolumeView.showsVolumeSlider = NO;
 
+	mpVolumeViewParentView.backgroundColor = [UIColor clearColor];
+	self.myVolumeView = [[MPVolumeView alloc] initWithFrame:
+	mpVolumeViewParentView.bounds]; [mpVolumeViewParentView addSubview:
+	myVolumeView]; self.myVolumeView.showsVolumeSlider = NO;
+
+    // Set color for Slider images before handle (minimum) and after handle (maximum)
+    CGSize sz = CGSizeMake(3,3);
+    UIGraphicsBeginImageContextWithOptions(CGSizeMake(sz.height,sz.height), NO, 0);
+
+    // minimum im1
+    [[UIColor whiteColor] setFill];
+    [[UIBezierPath bezierPathWithOvalInRect:CGRectMake(0,0,sz.height,sz.height)] fill];
+    UIImage* im1 = UIGraphicsGetImageFromCurrentImageContext();
+
+    // maximum im2
+    [[UIColor lightGrayColor] setFill];
+    [[UIBezierPath bezierPathWithOvalInRect:CGRectMake(0,0,sz.height,sz.height)] fill];
+    UIImage* im2 = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+
+    // attach im1 to minimum slider
+    [self.myVolumeView setMinimumVolumeSliderImage:
+     [im1 resizableImageWithCapInsets:UIEdgeInsetsMake(2,2,2,2)
+                         resizingMode:UIImageResizingModeStretch]
+                                          forState:UIControlStateNormal];
+
+    // attach im1 to maximum slider
+    [self.myVolumeView setMaximumVolumeSliderImage:
+     [im2 resizableImageWithCapInsets:UIEdgeInsetsMake(2,2,2,2)
+                         resizingMode:UIImageResizingModeStretch]
+                                          forState:UIControlStateNormal];
 
     volumeViewSlider = nil;
-    for (UIView *view in [self.myVolumeView subviews]){
-        if ([view.class.description isEqualToString:@"MPVolumeSlider"]){
+    for (UIView *view in [self.myVolumeView subviews]) {
+        if ([view.class.description isEqualToString:@"MPVolumeSlider"]) {
             volumeViewSlider = (UISlider*)view;
             NSLog(@"Found MPVolumeslider :  %f" ,userVolume );
             break;
@@ -124,5 +145,12 @@ UISlider* volumeViewSlider = nil;
 
 }
 
++ (UIColor *)colorFromHexString:(NSString *)hexString {
+    unsigned rgbValue = 0;
+    NSScanner *scanner = [NSScanner scannerWithString:hexString];
+    [scanner setScanLocation:1]; // bypass '#' character
+    [scanner scanHexInt:&rgbValue];
+    return [UIColor colorWithRed:((rgbValue & 0xFF0000) >> 16)/255.0 green:((rgbValue & 0xFF00) >> 8)/255.0 blue:(rgbValue & 0xFF)/255.0 alpha:1.0];
+}
 
 @end
