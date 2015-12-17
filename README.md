@@ -1,6 +1,7 @@
 VolumeSlider
 ============
 
+*Updated for possibility to change color of the slider* (iOS only for now) by [@pteich]
 *Updated for Cordova 3.0* by [@orbitaloop](https://github.com/orbitaloop)
 
 Installation
@@ -12,10 +13,10 @@ Add the plugin much like any other:
 
 ### For Cordova 3.0.x:
 
-1. To add this plugin use one of the below: 
-	- `cordova plugin add https://github.com/devgeeks/VolumeSlider.git` or 
-	- `phonegap local plugin add https://github.com/devgeeks/VolumeSlider.git`
-2. To remove this plugin use one of the below: 
+1. To add this plugin use one of the below:
+	- `cordova plugin add https://github.com/pteich/VolumeSlider.git` or
+	- `phonegap local plugin add https://github.com/pteich/VolumeSlider.git`
+2. To remove this plugin use one of the below:
 	- `cordova plugin remove org.devgeeks.volumeslider`
 	- `phonegap local plugin remove org.devgeeks.volumeslider`
 
@@ -26,10 +27,13 @@ Add the plugin much like any other:
 function onDeviceReady()
 {
 	var volumeSlider = window.plugins.volumeSlider;
-	volumeSlider.createVolumeSlider(10,350,300,30); // origin x, origin y, width, height
+	volumeSlider.createVolumeSlider(10,350,300,30,'#ffffff','#ffffff'); // origin x, origin y, width, height, colorMinimumSlider, colorMaximumSlider
 	volumeSlider.showVolumeSlider();
 }
 ```
+`height` (default: 30), `colorMinimumSlider` (default: #ffffff) and `colorMaximumSlider` (default: #ffffff) are optional.
+
+`colorMinimumSlider` defines the color of the slider before the handle, `colorMaximumSlider` after it. Both are hex color values.
 
 ... now since this is a native control added more or less on top of your webView, you might have to show and hide it if you navigate away from the _page_ you want the VolumeSlider on:
 
