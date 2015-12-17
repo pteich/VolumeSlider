@@ -9,7 +9,9 @@
 
 #import <UIKit/UIKit.h>
 #import <Cordova/CDVPlugin.h>
+
 #import <MediaPlayer/MediaPlayer.h>
+
 
 @interface VolumeSlider : CDVPlugin <UITabBarDelegate> {
 	NSString* callbackId;

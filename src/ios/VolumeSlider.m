@@ -33,52 +33,62 @@ UISlider* volumeViewSlider = nil;
 
 - (void) createVolumeSlider:(CDVInvokedUrlCommand *)command
 {
-	NSLog(@"In createVolumeSlider");
+    NSLog(@"In createVolumeSlider");
     NSArray* arguments = [command arguments];
 
-	self.callbackId = command.callbackId;
-	NSUInteger argc = [arguments count];
+    self.callbackId = command.callbackId;
+    NSUInteger argc = [arguments count];
 
-	if (argc < 3) { // at a minimum we need x origin, y origin and width...
-		return;
-	}
+    if (argc < 3) { // at a minimum we need x origin, y origin and width...
+        return;
+    }
 
-	if (self.mpVolumeViewParentView != NULL) {
-       // 	return;//already created, don't need to create it again
-	}
+    if (self.mpVolumeViewParentView != NULL) {
+        // 	return;//already created, don't need to create it again
+    }
 
-	CGFloat originx,originy,width;
-	CGFloat height = 30;
+    CGFloat originx,originy,width;
+    CGFloat height = 30;
 
-	originx = [[arguments objectAtIndex:0] floatValue];
-	originy = [[arguments objectAtIndex:1] floatValue];
-	width = [[arguments objectAtIndex:2] floatValue];
-	if (argc > 3) {
-		height = [[arguments objectAtIndex:3] floatValue];
-	}
+    originx = [[arguments objectAtIndex:0] floatValue];
+    originy = [[arguments objectAtIndex:1] floatValue];
+    width = [[arguments objectAtIndex:2] floatValue];
+    if (argc > 3) {
+        height = [[arguments objectAtIndex:3] floatValue];
+    }
 
-	CGRect viewRect = CGRectMake(originx,originy,width,height);
+    // preset colors
+    NSString * colorMinimumSlider = @"#FFFFFF";
+    NSString * colorMaximumSlider = @"#FFFFFF";
+    if (argc > 4) {
+        colorMinimumSlider = [arguments  objectAtIndex:4];
+    }
+    if (argc > 5) {
+        colorMaximumSlider = [arguments  objectAtIndex:5];
+    }
+
+    CGRect viewRect = CGRectMake(originx,originy,width,height);
 
     self.mpVolumeViewParentView = [[UIView alloc] initWithFrame:viewRect];
 
-	[self.webView.superview addSubview:mpVolumeViewParentView];
+    [self.webView.superview addSubview:mpVolumeViewParentView];
 
-	mpVolumeViewParentView.backgroundColor = [UIColor clearColor];
-	self.myVolumeView = [[MPVolumeView alloc] initWithFrame:
-	mpVolumeViewParentView.bounds]; [mpVolumeViewParentView addSubview:
-	myVolumeView]; self.myVolumeView.showsVolumeSlider = NO;
+    mpVolumeViewParentView.backgroundColor = [UIColor clearColor];
+    self.myVolumeView = [[MPVolumeView alloc] initWithFrame:
+                         mpVolumeViewParentView.bounds]; [mpVolumeViewParentView addSubview:
+                                                          myVolumeView]; self.myVolumeView.showsVolumeSlider = NO;
 
     // Set color for Slider images before handle (minimum) and after handle (maximum)
     CGSize sz = CGSizeMake(3,3);
     UIGraphicsBeginImageContextWithOptions(CGSizeMake(sz.height,sz.height), NO, 0);
 
-    // minimum im1
-    [[UIColor whiteColor] setFill];
+    // minimum: im1
+    [[UIColor colorFromHexString:colorMinimumSlider] setFill];
     [[UIBezierPath bezierPathWithOvalInRect:CGRectMake(0,0,sz.height,sz.height)] fill];
     UIImage* im1 = UIGraphicsGetImageFromCurrentImageContext();
 
-    // maximum im2
-    [[UIColor lightGrayColor] setFill];
+    // maximum: im2
+    [[UIColor colorFromHexString:colorMaximumSlider] setFill];
     [[UIBezierPath bezierPathWithOvalInRect:CGRectMake(0,0,sz.height,sz.height)] fill];
     UIImage* im2 = UIGraphicsGetImageFromCurrentImageContext();
     UIGraphicsEndImageContext();
@@ -109,24 +119,24 @@ UISlider* volumeViewSlider = nil;
 
 - (void)showVolumeSlider:(CDVInvokedUrlCommand *)command
 {
-	self.myVolumeView.showsVolumeSlider = YES;
-	self.mpVolumeViewParentView.hidden = NO;
+    self.myVolumeView.showsVolumeSlider = YES;
+    self.mpVolumeViewParentView.hidden = NO;
 
 }
 
 - (void)hideVolumeSlider:(CDVInvokedUrlCommand *)command
 {
-	self.mpVolumeViewParentView.hidden = YES;
-	self.myVolumeView.showsVolumeSlider = NO;
+    self.mpVolumeViewParentView.hidden = YES;
+    self.myVolumeView.showsVolumeSlider = NO;
 }
 
 - (void)setVolumeSlider:(CDVInvokedUrlCommand *)command
 {
     self.mpVolumeViewParentView.hidden = YES;
-	self.myVolumeView.showsVolumeSlider = NO;
+    self.myVolumeView.showsVolumeSlider = NO;
 
-	NSArray* arguments = [command arguments];
-	NSUInteger argc = [arguments count];
+    NSArray* arguments = [command arguments];
+    NSUInteger argc = [arguments count];
 
     if (argc < 1) { // at a minimum we need the value to be set...
         return;
@@ -144,7 +154,6 @@ UISlider* volumeViewSlider = nil;
     [volumeViewSlider sendActionsForControlEvents:UIControlEventTouchUpInside];
 
 }
-
 @end
 
 
