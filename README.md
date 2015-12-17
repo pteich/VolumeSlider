@@ -1,7 +1,8 @@
 VolumeSlider
 ============
 
-*Updated for possibility to change color of the slider* (iOS only for now) by [@pteich]
+*Updated for possibility to change color of the slider* (iOS only for now) by [@pteich](https://github.com/pteich)
+
 *Updated for Cordova 3.0* by [@orbitaloop](https://github.com/orbitaloop)
 
 Installation
