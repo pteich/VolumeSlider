@@ -74,9 +74,14 @@ UISlider* volumeViewSlider = nil;
     [self.webView.superview addSubview:mpVolumeViewParentView];
 
     mpVolumeViewParentView.backgroundColor = [UIColor clearColor];
-    self.myVolumeView = [[MPVolumeView alloc] initWithFrame:
-                         mpVolumeViewParentView.bounds]; [mpVolumeViewParentView addSubview:
-                                                          myVolumeView]; self.myVolumeView.showsVolumeSlider = NO;
+    self.myVolumeView = [[MPVolumeView alloc] initWithFrame:mpVolumeViewParentView.bounds];
+    [mpVolumeViewParentView addSubview:myVolumeView];
+    self.myVolumeView.showsVolumeSlider = NO;
+
+    /****
+     * The following block works but makes everything a bit difficult.
+     * But it has the advantage to not only change colors but also sizes of the slider.
+     * For now I prefer to set only colors as found below.
 
     // Set color for Slider images before handle (minimum) and after handle (maximum)
     CGSize sz = CGSizeMake(3,3);
@@ -94,6 +99,7 @@ UISlider* volumeViewSlider = nil;
     UIGraphicsEndImageContext();
 
     // attach im1 to minimum slider
+    [self.myVolumeView]
     [self.myVolumeView setMinimumVolumeSliderImage:
      [im1 resizableImageWithCapInsets:UIEdgeInsetsMake(2,2,2,2)
                          resizingMode:UIImageResizingModeStretch]
@@ -104,13 +110,21 @@ UISlider* volumeViewSlider = nil;
      [im2 resizableImageWithCapInsets:UIEdgeInsetsMake(2,2,2,2)
                          resizingMode:UIImageResizingModeStretch]
                                           forState:UIControlStateNormal];
+     ****/
 
     volumeViewSlider = nil;
     for (UIView *view in [self.myVolumeView subviews]) {
         if ([view.class.description isEqualToString:@"MPVolumeSlider"]) {
             volumeViewSlider = (UISlider*)view;
             NSLog(@"Found MPVolumeslider :  %f" ,userVolume );
-            break;
+            //break;
+        }
+
+        // easier way to only set the color of the slider
+        if ([view isKindOfClass:[UISlider class]]) {
+            UISlider *volumeSlider = (UISlider *)view;
+            volumeSlider.minimumTrackTintColor = [UIColor colorFromHexString:colorMinimumSlider];
+            volumeSlider.maximumTrackTintColor = [UIColor colorFromHexString:colorMaximumSlider];
         }
     }
     userVolume = volumeViewSlider.value;
