@@ -47,12 +47,15 @@ UISlider* volumeViewSlider = nil;
         // 	return;//already created, don't need to create it again
     }
 
-    CGFloat originx,originy,width;
+    CGFloat originx,originy;
     CGFloat height = 30;
+    CGFloat width = 100;
 
     originx = [[arguments objectAtIndex:0] floatValue];
     originy = [[arguments objectAtIndex:1] floatValue];
-    width = [[arguments objectAtIndex:2] floatValue];
+    if (argc > 2) {
+        width = [[arguments objectAtIndex:2] floatValue];
+    }
     if (argc > 3) {
         height = [[arguments objectAtIndex:3] floatValue];
     }
