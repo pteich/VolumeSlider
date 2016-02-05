@@ -74,17 +74,16 @@ UISlider* volumeViewSlider = nil;
 
     self.mpVolumeViewParentView = [[UIView alloc] initWithFrame:viewRect];
 
-    [self.webView.superview addSubview:mpVolumeViewParentView];
+    [self.webView.superview addSubview:self.mpVolumeViewParentView];
 
-    mpVolumeViewParentView.backgroundColor = [UIColor clearColor];
-    self.myVolumeView = [[MPVolumeView alloc] initWithFrame:mpVolumeViewParentView.bounds];
-    [mpVolumeViewParentView addSubview:myVolumeView];
+    self.mpVolumeViewParentView.backgroundColor = [UIColor clearColor];
+    self.myVolumeView = [[MPVolumeView alloc] initWithFrame:self.mpVolumeViewParentView.bounds];
+    [mpVolumeViewParentView addSubview:self.myVolumeView];
     self.myVolumeView.showsVolumeSlider = NO;
 
-    /****
-     * The following block works but makes everything a bit difficult.
-     * But it has the advantage to not only change colors but also sizes of the slider.
-     * For now I prefer to set only colors as found below.
+    /****** Removed all this in favour of setting maximum/minimumTrackTintColor
+     *      BUT this causes a bug in iOS 8 (see http://www.openradar.appspot.com/19915414)
+     *      so I only apply my colors if we run iOS >=9, older devices get standard look
 
     // Set color for Slider images before handle (minimum) and after handle (maximum)
     CGSize sz = CGSizeMake(3,3);
@@ -113,21 +112,21 @@ UISlider* volumeViewSlider = nil;
      [im2 resizableImageWithCapInsets:UIEdgeInsetsMake(2,2,2,2)
                          resizingMode:UIImageResizingModeStretch]
                                           forState:UIControlStateNormal];
-     ****/
+
+     **************************************************************************************/
 
     volumeViewSlider = nil;
     for (UIView *view in [self.myVolumeView subviews]) {
-        if ([view.class.description isEqualToString:@"MPVolumeSlider"]) {
+        if ([view isKindOfClass:[UISlider class]]) {
             volumeViewSlider = (UISlider*)view;
             NSLog(@"Found MPVolumeslider :  %f" ,userVolume );
-            //break;
-        }
 
-        // easier way to only set the color of the slider
-        if ([view isKindOfClass:[UISlider class]]) {
-            UISlider *volumeSlider = (UISlider *)view;
-            volumeSlider.minimumTrackTintColor = [UIColor colorFromHexString:colorMinimumSlider];
-            volumeSlider.maximumTrackTintColor = [UIColor colorFromHexString:colorMaximumSlider];
+            if ([[[UIDevice currentDevice] systemVersion] compare:@"9.0" options:NSNumericSearch] != NSOrderedAscending) {
+                volumeViewSlider.minimumTrackTintColor = [UIColor colorFromHexString:colorMinimumSlider];
+                volumeViewSlider.maximumTrackTintColor = [UIColor colorFromHexString:colorMaximumSlider];
+            }
+
+            break;
         }
     }
     userVolume = volumeViewSlider.value;
